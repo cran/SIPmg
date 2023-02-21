@@ -17,7 +17,6 @@ knitr::opts_chunk$set(
 
 #BiocManager::install("EBImage")
 
-library(tidyverse)
 library(phyloseq)
 library(HTSSIP)
 library(ggpubr)

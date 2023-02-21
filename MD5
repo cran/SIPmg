@@ -1,4 +1,4 @@
-15f19de2644486a3eece9922b10c01b5 *DESCRIPTION
+3a64596970c93751fe63b1d5b836f2eb *DESCRIPTION
 a61a44832c6c843740128c583117d3fe *NAMESPACE
 d8f01b7a998df588fef031d5fb8111dd *R/DESeq2_l2fc.R
 16a4b201e99aa2f4215f1f20d89cc28f *R/HRSIP.R
@@ -14,12 +14,12 @@ f50d8803a634f510a6497537c4577abb *R/mag-table-data.R
 f96ed37d4241af68901b5ab1bab49892 *R/master-phyloseq-data.R
 5873e4d60bbd59004c9f2c7b652a43d6 *R/samples-object-data.R
 c00975896d0266254d3fc8786b660d19 *R/sequin-dilutions-data.R
-354b069b9ff32f58a8e8e4496b78262c *R/sequin_scaling_lm.R
-c09256eb650e464637cf90ce75cc2c6a *R/sequin_scaling_rlm.R
+cc9465b15f9f3ed18dfbc787bdeb559d *R/sequin_scaling_lm.R
+57d2c200db51df89a416c8522ef9fd90 *R/sequin_scaling_rlm.R
 51076586f5fac10c841129b8fb99076d *R/sequins-data.R
 ef6cda7ab30cd9377c85bf81fb191bc6 *R/taxonomy-object.R
 589f077954ec10bfe2a97ef7381d2405 *R/taxonomy-table-data.R
-80887ad7da0c8908b682a2d290af1ad7 *build/vignette.rds
+f84b472d838cbff8f8998681c551ed1f *build/vignette.rds
 9f2ca9272c4b28ba7409853f4bffa578 *data/GC_content.rda
 153bc74631d6eb75aa2019e6643e7c8a *data/atomX.rda
 cd74179d78390fb6c814baf6d170668b *data/df_atomX_boot.rda
@@ -32,9 +32,9 @@ da2cb67a8fcfdeb06f2ceb676a2c0e8d *data/seq_dil.rda
 9868e1d0de4aaf1288479ce1892d05cc *data/sequins.rda
 989efe23507e74a698eb6064243d628c *data/taxonomy.object.rda
 005dec191934d4f4cb3cdf9b296289ee *data/taxonomy_tibble.rda
-9dfdeb113906791b55cb8624bfc55e1d *inst/doc/SIPmg-vignette.R
-c5b3040bdd712156122db8541e76bd52 *inst/doc/SIPmg-vignette.Rmd
-43e825181f11a5bb5a2d2cd55a5a819b *inst/doc/SIPmg-vignette.html
+e6be5220d525f68d7835c50aea77e606 *inst/doc/SIPmg-vignette.R
+44631769e0fef01e32decb349b1b5cef *inst/doc/SIPmg-vignette.Rmd
+ebdea7c5f6fe427ba0bf16dac0c48e5f *inst/doc/SIPmg-vignette.html
 3259e87396510a355e05d28550370824 *man/DESeq2_l2fc.Rd
 075a77c73d104f90f3e78a9d7d2a6cfb *man/GC_content.Rd
 d499d2da767f7d1cf63a4f3a6d39f3d7 *man/HRSIP.Rd
@@ -63,7 +63,7 @@ da302de573000105a55a032a8afbea5b *man/scale_features_lm.Rd
 905783344c30e86cf77cb8ed5c2002b0 *man/tax.table.Rd
 821775376570f528b06492c5185752d1 *man/taxonomy.object.Rd
 ef0a3ec7610137cb7f30c6864df6f2ec *man/taxonomy_tibble.Rd
-c5b3040bdd712156122db8541e76bd52 *vignettes/SIPmg-vignette.Rmd
+44631769e0fef01e32decb349b1b5cef *vignettes/SIPmg-vignette.Rmd
 75feb0fe97591f2f60d180ad08f73a20 *vignettes/cooksd-example.png
 cb389f1feb1261261e267096c8f7990c *vignettes/filtered_lm-example.png
 5211d4a3dc59890a582a5319f26c6b0e *vignettes/lm-example.png
