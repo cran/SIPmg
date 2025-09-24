@@ -6,18 +6,20 @@
 \usage{
 qSIP_bootstrap_fcr(
   atomX,
-  isotope = "13C",
+  isotope,
   n_sample = c(3, 3),
   ci_adjust_method = "fcr",
   n_boot = 10,
   parallel = FALSE,
-  a = 0.1
+  a = 0.1,
+  Gi,
+  show_delbd_AFE = FALSE
 )
 }
 \arguments{
 \item{atomX}{A list object created by \code{qSIP_atom_excess_MAGs()}}
 
-\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O')}
+\item{isotope}{The isotope for which the DNA is labeled with ('13C', '15N' or '18O')}
 
 \item{n_sample}{A vector of length 2. The sample size for data resampling (with replacement) for 1) control samples and 2) treatment samples.}
 
@@ -28,6 +30,10 @@ qSIP_bootstrap_fcr(
 \item{parallel}{Parallel processing. See \code{.parallel} option in \code{dplyr::mdply()} for more details.}
 
 \item{a}{A numeric value. The alpha for calculating confidence intervals.}
+
+\item{Gi}{The G+C content of unlabeled DNA as a dataframe with "Feature" column having MAGs, contigs, or other features as rows, and a "Gi" column with GC content}
+
+\item{show_delbd_AFE}{Show AFE values and incorporator identification estimated based on the delta buoyant density estimates?}
 }
 \value{
 A data.frame of atom fraction excess values (A) and atom fraction excess confidence intervals adjusted for multiple testing.
@@ -44,7 +50,8 @@ atomX = qSIP_atom_excess_MAGs(phylo.qSIP,
                         treatment_rep='Replicate', Gi = GC_content)
 
 ### Add doParallel::registerDoParallel(num_cores) if parallel bootstrapping is to be done
-df_atomX_boot = qSIP_bootstrap_fcr(atomX, n_boot=5, parallel = FALSE)
+df_atomX_boot = qSIP_bootstrap_fcr(atomX, isotope = "13C", Gi = GC_content,
+                                   n_boot=5, parallel = FALSE)
 }
 
 }

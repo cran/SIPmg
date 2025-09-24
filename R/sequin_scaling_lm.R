@@ -5,7 +5,7 @@
 #'@param f_tibble Can be either of
 #' (1) a tibble with first column "Feature" that contains bin IDs, and the rest of the columns represent samples with bins' coverage values.
 #' (2) a tibble as outputted by the program "checkm coverage" from the tool CheckM. Please check CheckM documentation - https://github.com/Ecogenomics/CheckM on the usage for "checkm coverage" program
-#'@param sequin_meta tibble containing sequin names ("Feature column") and concentrations in attamoles/uL ("Concentration") column.
+#'@param sequin_meta tibble containing sequin names ("Feature" column) and concentrations in attamoles/uL ("Concentration" column).
 #'@param seq_dilution tibble with first column "Sample" with **same sample names as in f_tibble**, and a second column "Dilution" showing ratio of sequins added to final sample volume (e.g. a value of 0.01 for a dilution of 1 volume sequin to 99 volumes sample)
 #'@param coe_of_variation Acceptable coefficient of variation for coverage and detection (eg. 20 - for 20 % threshold of coefficient of variation). Coverages above the threshold value will be flagged in the plots.
 #'@param log_trans Boolean (TRUE or FALSE), should coverages and sequin concentrations be log-scaled?
@@ -39,16 +39,19 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
                                   cook_filtering = TRUE){
   Sample <- cov_tab <- seq_cov <- Dilution <- seq_group  <- influential_data <- seq_cov_filt_temp <- NULL
   seq_det <- grouped_seq_cov <- seq_cov_filt <- lod <- fit <- mag_cov <- slope <- mag_ab <- intercept <- cooksd <- log_scale <- NULL
+  number_of_groups <- NULL
   seq_cov_filt_temp_grouped <- seq_cov_filt_round2 <- zero_row_check <- fit_filtered_lm <- slope_filtered <- intercept_filtered <- cooksd_filtered <- NULL
-  mag_ab_filtered <- mag_det_filtered <- cooksd_plot <- cooksd_plot_filtered <- plots_filtered_lm <- NULL
+  mag_ab_filtered <- mag_det_filtered <- cooksd_plot <- cooksd_plot_filtered <- plots_filtered_lm <- . <- NULL
+  filtered_samples <- character()
   # Retrieve sample names from feature tibble
   # Retrieve sample names from feature tibble
   scale_fac <- dplyr::tibble(Sample = names(f_tibble) %>%
                                stringr::str_subset(pattern = "Feature", negate = TRUE))
 
+  #TODO clean up code
   # Merge dilution factors for samples, add log-scaling option
   scale_fac <- scale_fac %>%
-    dplyr::inner_join(seq_dilution, by = "Sample") %>%
+    dplyr::inner_join(seq_dilution %>% stats::setNames(c("Sample", "Dilution")), by = "Sample") %>%
     dplyr::mutate(log_trans = log_trans)
 
   # Make coverage table for features
@@ -94,8 +97,7 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
       seq_det = purrr::map(seq_det, ~ dplyr::mutate(., diff = standards - detected)),
       seq_det = purrr::map(seq_det, ~ dplyr::mutate(., ratio = detected*100/standards)),
       lod = purrr::map_dbl(seq_det, ~ dplyr::filter(., ratio > lod_limit) %>%
-                             dplyr::filter(Concentration == min(Concentration)) %>%
-                             dplyr::pull(Concentration)),
+                             dplyr::pull(Concentration) %>% min()),
       seq_warning = purrr::map_int(seq_det, ~ dplyr::summarise(., Sum = sum(diff)) %>%
                                      dplyr::pull(Sum)) #positive values give warning later
     ) %>%
@@ -117,18 +119,42 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
     dplyr::mutate(under_detected = purrr::map(grouped_seq_cov, ~.x %>%
                                                 dplyr::filter(is.na(mean_cov)) %>%
                                                 dplyr::select(Concentration))
-    ) %>%
+    )
 
+  scale_fac <- scale_fac %>%
     # perform linear regression on coverage vs conc., extract lm params, make plots
     dplyr::mutate(
       seq_cov_filt = purrr::map2(seq_cov,grouped_seq_cov, ~ dplyr::inner_join(.x, .y , by = "Concentration") %>%
                                    dplyr::filter(., Coverage > 0)), #remove zero coverage values before lm
       seq_cov_filt = purrr::map2(seq_cov_filt, lod, ~.x %>%
                                    dplyr::filter(Concentration >= .y) %>% #Remove concentrations below limit of detection
-                                   dplyr::filter(., coe_var <= coe_of_variation) %>% #Remove sequin concentration groups which have high coefficient of variation
+                                   dplyr::filter(., threshold_detection) %>% #Remove sequin concentration groups which have high coefficient of variation
                                    dplyr::mutate(
-                                     lod = .y))) %>%
+                                     lod = .y)))
 
+  # get the number of sequin concentration groups and the total number of sequins
+  scale_fac <- scale_fac %>%
+    dplyr::mutate(
+      number_of_groups = purrr::map_int(scale_fac$grouped_seq_cov, ~ dplyr::filter(.x, threshold_detection) %>% nrow()),
+      number_of_sequins = purrr::map_int(scale_fac$seq_cov_filt, ~ nrow(.x))
+    )
+
+  if(all(scale_fac$number_of_groups <= 2)) stop("All fractions have 2 or less sequin concentration groups below the coefficient of variation, there is no sufficient number of data to carry out the linear regression, please consider increasing the coefficient value.")
+
+  # get samples that were filtered out because they have 2 or less sequin concentration groups below the coeffciient of variation
+  filtered_samples <- scale_fac %>%
+    dplyr::filter(number_of_groups <= 2) %>%
+    dplyr::pull(Sample) %>%
+    append(filtered_samples, .)
+
+  if(nrow(dplyr::filter(scale_fac, number_of_groups <= 2)) > 0){
+    message(glue::glue("{length(filtered_samples)} fractions were removed because they have 2 or less sequin concentration groups with a coefficient of variation below the coefficient of variation threshold."))
+    }
+
+
+  scale_fac <- scale_fac %>%
+    dplyr::filter(number_of_groups > 2) %>%
+# TODO print messsage about how many sequins are being used for the lm fit
     dplyr::mutate(
       seq_cov_filt = purrr::map(seq_cov_filt, ~ .x %>%
                            dplyr::mutate(
@@ -150,7 +176,11 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
                                   ggplot2::geom_point(ggplot2::aes(shape = threshold_detection)) +
                                   ggplot2::geom_smooth(method = "lm") +
                                   ggpubr::stat_regline_equation(label.x= -0.1, label.y = 3) +
-                                  ggpubr::stat_cor(ggplot2::aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), label.x = -0.1, label.y = 3.5) +
+                                  ggpubr::stat_cor(ggplot2::aes(label = paste(ggplot2::after_stat(rr.label),
+                                                                              ggplot2::after_stat(p.label),
+                                                                              sep = "~`,`~")
+                                                                ),
+                                                   label.x = -0.1, label.y = 3.5) +
                                   ggplot2::xlab("Coverage (log[read depth])") +
                                   ggplot2::ylab("DNA Concentration (log[attamoles/uL])") +
                                   ggplot2::scale_shape(name = "Coefficient of variation", labels = c(paste("below the threshold (",coe_of_variation,")"), paste("above the threshold(",coe_of_variation,")"))) +
@@ -218,8 +248,22 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
         outliers = purrr::map2(seq_cov_filt_temp, seq_cov_filt_temp_grouped, ~ dplyr::select(.x, -mean_cov, -sd_cov, -coe_var, -threshold_detection) %>%
                                  dplyr::anti_join(., .y, by = "Concentration")), #List outliers in the data
         zero_row_check = purrr::map(seq_cov_filt_round2, ~nrow(.)) # For linear regression, check if any samples have zero data points or only one data point. This precludes linear regression analysis
-      ) %>%
-      dplyr::filter(zero_row_check > 0) %>% #Filter samples which have one or zero data points in the seq_cov_filt_round2 tibble
+      )
+    filtered_samples = scale_fac %>%
+      dplyr::filter(zero_row_check <= 1) %>%
+      dplyr::pull(Sample) %>%
+      append(filtered_samples, .)
+
+    if(nrow(dplyr::filter(scale_fac, zero_row_check <= 1)) > 0){
+      message(glue::glue("{nrow(dplyr::filter(scale_fac, zero_row_check <= 1))} fractions were removed because they have 1 or 0 sequin data points after Cook's distance filtering."))
+    }
+
+    scale_fac <- scale_fac %>%
+      dplyr::filter(zero_row_check > 1) #Filter samples which have one or zero data points in the seq_cov_filt_round2 tibble
+
+    if(nrow(scale_fac) == 0) stop("There are no fractions with sufficient sequin data points to carry out the linear regression, please consider increasing the coefficient of variation. ")
+
+    scale_fac <- scale_fac %>%
       dplyr::mutate(
         seq_cov_filt_round2 = purrr::map(seq_cov_filt_round2, ~ .x %>%
                              dplyr::mutate(
@@ -231,8 +275,25 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
         ),
         slope_filtered = purrr::map_dbl(fit_filtered_lm, ~ summary(.)$coef[2]), # get slope
         intercept_filtered = purrr::map_dbl(fit_filtered_lm, ~summary(.)$coef[1])
-      ) %>%
-      dplyr::filter(slope_filtered > 0) %>%
+      )
+
+    # save samples that have negative slope to raise warning on lost samples
+    filtered_samples <- scale_fac %>%
+      dplyr::filter(slope_filtered < 0) %>%
+      dplyr::pull(Sample) %>%
+      append(filtered_samples, .)
+
+    if(nrow(dplyr::filter(scale_fac, slope_filtered < 0)) > 0){
+      message(glue::glue("{nrow(dplyr::filter(scale_fac, slope_filtered < 0))} fractions were removed because they have a negative regression slope."))
+    }
+
+    # filter samples with negative slope and continue
+    scale_fac <- scale_fac %>%
+      dplyr::filter(slope_filtered > 0)
+
+    if(nrow(scale_fac) == 0) stop("There are no fractions that passed the filtering (i.e. they have low sequin data points below the coefficient of variation or they have a negative regression slope), please consider increasing the coefficient of variation.")
+
+    scale_fac <- scale_fac %>%
       dplyr::mutate(
         cooksd_filtered = purrr::map(fit_filtered_lm, ~ stats::cooks.distance(.)), #Recalculate Cooks distance to validate if the pipeline to filter out outliers worked
         cooksd_plot_filtered = purrr::map(cooksd_filtered, ~ ggplot2::ggplot(tibble::as_tibble(.), ggplot2::aes(y = value, x = seq(1, length(.)))) +
@@ -344,7 +405,12 @@ scale_features_lm <- function(f_tibble, sequin_meta, seq_dilution,
                   "mag_det" = mag_det,
                   "plots" = plots,
                   "scale_fac" = scale_fac)
+  if(length(filtered_samples > 0)){
+    results$filtered_samples = filtered_samples
+    message(glue::glue("{length(filtered_samples)} fractions out of {sum(length(filtered_samples),ncol(mag_tab))} were filtered out, see 'filtered_samples' in output list. To decrease the number of fractions removed please consider increasing the coefficient of variation"))
+    }
 
+  #TODO reimplement plot generation to not have these warnings
  file.remove(plot_dir) #If plots are not saved, this directory will be empty and here it will be removed, if the dir is not empty and a name is not provided the script raises a warning
   return(results)
  }

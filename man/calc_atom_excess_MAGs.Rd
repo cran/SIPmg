@@ -13,7 +13,7 @@ calc_atom_excess_MAGs(Mlab, Mlight, Mheavymax, isotope = "13C")
 
 \item{Mheavymax}{The theoretical maximum molecular weight of fully-labeled DNA}
 
-\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O')}
+\item{isotope}{The isotope for which the DNA is labeled with ('13C', '18O', '15N')}
 }
 \value{
 numeric value: atom fraction excess (A)

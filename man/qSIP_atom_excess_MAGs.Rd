@@ -21,7 +21,7 @@ qSIP_atom_excess_MAGs(
 \item{treatment_rep}{Which column in the phyloseq sample data designates
 replicate treatments}
 
-\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O')}
+\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O' or '15N')}
 
 \item{df_OTU_W}{Keep NULL}
 

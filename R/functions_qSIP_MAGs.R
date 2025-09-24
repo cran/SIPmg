@@ -113,7 +113,7 @@ phylo.table = function(mag,taxa,samples) {
 #' for use with genome-centric metagenomics. See Hungate et al., 2015 for more details
 #'
 #' @param Mlight  The molecular wight of unlabeled DNA
-#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O' or '15N')
 #' @param Gi  The G+C content of unlabeled DNA
 #' @return numeric value: maximum molecular weight of fully-labeled DNA
 #'
@@ -124,7 +124,10 @@ calc_Mheavymax_MAGs = function(Mlight, isotope='13C', Gi=Gi){
   } else
     if(isotope=='18O'){
       Mhm = 12.07747 + Mlight
-    } else {
+    } else
+      if(isotope=='15N'){
+        Mhm = 0.5024851*Gi + 3.517396 + Mlight
+      } else {
       stop('isotope not recognized')
     }
   return(Mhm)
@@ -137,7 +140,7 @@ calc_Mheavymax_MAGs = function(Mlight, isotope='13C', Gi=Gi){
 #' @param Mlab  The molecular wight of labeled DNA
 #' @param Mlight  The molecular wight of unlabeled DNA
 #' @param Mheavymax  The theoretical maximum molecular weight of fully-labeled DNA
-#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param isotope  The isotope for which the DNA is labeled with ('13C', '18O', '15N')
 #' @return numeric value: atom fraction excess (A)
 #'
 calc_atom_excess_MAGs = function(Mlab, Mlight, Mheavymax, isotope='13C'){
@@ -147,7 +150,10 @@ calc_atom_excess_MAGs = function(Mlab, Mlight, Mheavymax, isotope='13C'){
   } else
     if(isotope=='18O'){
       x = 0.002000429
-    } else {
+    } else
+      if(isotope=='15N'){
+        x = 0.003663004
+      } else {
       stop('isotope not recognized')
     }
   A = (Mlab - Mlight) / (Mheavymax - Mlight) * (1 - x)
@@ -165,7 +171,7 @@ calc_atom_excess_MAGs = function(Mlab, Mlight, Mheavymax, isotope='13C'){
 qSIP_atom_excess_format_MAGs = function(physeq, control_expr, treatment_rep){
   # formatting input
   cols = c('IS_CONTROL', 'Buoyant_density', treatment_rep)
-  df_OTU = HTSSIP::phyloseq2table(physeq,
+  df_OTU = phyloseq2table(physeq,
                           include_sample_data=TRUE,
                           sample_col_keep=cols,
                           control_expr=control_expr)
@@ -188,7 +194,7 @@ qSIP_atom_excess_format_MAGs = function(physeq, control_expr, treatment_rep){
 #' @param control_expr  Expression used to identify control samples based on sample_data.
 #' @param treatment_rep  Which column in the phyloseq sample data designates
 #' replicate treatments
-#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O' or '15N')
 #' @param df_OTU_W  Keep NULL
 #' @param Gi GC content of the MAG
 #' @return A list of 2 data.frame objects. 'W' contains the weighted mean buoyant density (W) values for each OTU in each treatment/control. 'A' contains the atom fraction excess values for each OTU. For the 'A' table, the 'Z' column is buoyant density shift, and the 'A' column is atom fraction excess.
@@ -212,6 +218,8 @@ qSIP_atom_excess_MAGs = function(physeq,
                                  isotope='13C',
                                  df_OTU_W=NULL,
                                  Gi){
+
+  . <- NULL
   # formatting input
   if(is.null(df_OTU_W)){
     no_boot = TRUE
@@ -243,9 +251,14 @@ qSIP_atom_excess_MAGs = function(physeq,
     dplyr::mutate_(Z = "Wlab - Wlight") %>%
     dplyr::ungroup()
   # atom excess (A)
+  ## Ensuring GC content is not in percentage format, but between 1 and 0
+  gc_syntax = all(dplyr::between(Gi$Gi, 0, 1))
+  if(gc_syntax == FALSE) {
+    Gi = Gi %>% dplyr::mutate(Gi = Gi/100)
+  }
   ## pt1
   df_OTU_s = df_OTU_s %>%
-    dplyr::left_join(Gi, by="OTU") %>%
+    dplyr::left_join(Gi %>% stats::setNames(.,c("OTU", "Gi")), by="OTU") %>%
     dplyr::mutate_(Mlight = "0.496 * Gi + 307.691")
   ## pt2
   MoreArgs = list(isotope=isotope)
@@ -299,7 +312,7 @@ sample_W = function(df, n_sample){
 .qSIP_bootstrap = function(atomX,
                            isotope='13C',
                            n_sample=c(3,3),
-                           bootstrap_id = 1){
+                           bootstrap_id = 1, Gi = Gi){
   data = NULL
   temp = NULL
 
@@ -318,7 +331,7 @@ sample_W = function(df, n_sample){
                                         df_OTU_W=df_OTU_W,
                                         control_expr=NULL,
                                         treatment_rep=NULL,
-                                        isotope=isotope, Gi = GC_content)
+                                        isotope=isotope, Gi = Gi)
   atomX$bootstrap_id = bootstrap_id
   return(atomX)
 }
@@ -409,12 +422,14 @@ filter_na = function(atomX) {
 #' Calculate adjusted bootstrap CI after for multiple testing for atom fraction excess using q-SIP method. Multiple hypothesis tests are corrected by
 #
 #' @param atomX  A list object created by \code{qSIP_atom_excess_MAGs()}
-#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param isotope  The isotope for which the DNA is labeled with ('13C', '15N' or '18O')
 #' @param n_sample  A vector of length 2. The sample size for data resampling (with replacement) for 1) control samples and 2) treatment samples.
 #' @param n_boot  Number of bootstrap replicates.
 #' @param a  A numeric value. The alpha for calculating confidence intervals.
 #' @param parallel  Parallel processing. See \code{.parallel} option in \code{dplyr::mdply()} for more details.
 #' @param ci_adjust_method Confidence interval adjustment method. Please choose 'FCR', 'Bonferroni', or 'none' (if no adjustment is needed). Default is FCR and also provides unadjusted CI.
+#' @param Gi The G+C content of unlabeled DNA as a dataframe with "Feature" column having MAGs, contigs, or other features as rows, and a "Gi" column with GC content
+#' @param show_delbd_AFE Show AFE values and incorporator identification estimated based on the delta buoyant density estimates?
 #' @importFrom dplyr contains
 #' @return A data.frame of atom fraction excess values (A) and atom fraction excess confidence intervals adjusted for multiple testing.
 #' @export
@@ -428,15 +443,17 @@ filter_na = function(atomX) {
 #'                         treatment_rep='Replicate', Gi = GC_content)
 #'
 #' ### Add doParallel::registerDoParallel(num_cores) if parallel bootstrapping is to be done
-#' df_atomX_boot = qSIP_bootstrap_fcr(atomX, n_boot=5, parallel = FALSE)
+#' df_atomX_boot = qSIP_bootstrap_fcr(atomX, isotope = "13C", Gi = GC_content,
+#'                                    n_boot=5, parallel = FALSE)
 #'}
 #'
 
-qSIP_bootstrap_fcr = function(atomX, isotope='13C', n_sample=c(3,3), ci_adjust_method ='fcr',
-                                        n_boot=10, parallel=FALSE, a=0.1){
-  A_CI_low <- Mlight <- Mlab <- Mheavymax <- A <- Z <- delbd_sd <- NULL
+qSIP_bootstrap_fcr = function(atomX, isotope, n_sample=c(3,3), ci_adjust_method ='fcr',
+                                        n_boot=10, parallel=FALSE, a=0.1, Gi, show_delbd_AFE = FALSE){
+  A_CI_low <- A_CI_high <- Wlight <- Wlab <- Mlight <- Mlab <- Mheavymax <- A <- Z <- delbd_sd <- NULL
+  count <- cov <- A_mean <- A_sd <- . <- NULL
   # atom excess for each bootstrap replicate
-  if (isotope == "13C" || isotope == "18O") {
+  if (stringr::str_detect(isotope, paste(c("13C","15N","18O"), collapse = "|"))) {
   num_tests = nrow(atomX$A)
   a_bonferroni = a/num_tests
   df_boot_id = data.frame(bootstrap_id = 1:n_boot)
@@ -444,8 +461,10 @@ qSIP_bootstrap_fcr = function(atomX, isotope='13C', n_sample=c(3,3), ci_adjust_m
                         atomX = atomX,
                         isotope=isotope,
                         n_sample=n_sample,
-                        .parallel=parallel)
-
+                        .parallel=parallel, Gi = Gi)
+# TODO add progress bar?
+# TODO fix dplyr syntax "_()"
+# TODO figure out the .dots thing and how it works without the function_() syntax
   # calculating atomX CIs for each OTU
   mutate_call1 = lazyeval::interp(~ stats::quantile(A, a/2, na.rm=TRUE),
                                   A = as.name("A"))
@@ -493,11 +512,11 @@ qSIP_bootstrap_fcr = function(atomX, isotope='13C', n_sample=c(3,3), ci_adjust_m
 
   # combining with atomX summary data
   df_boot = dplyr::inner_join(atomX$A, df_boot, c('OTU'='OTU'))
-  } else if (isotope == "15N") {
-    df_boot = atomX$A
-    df_boot = df_boot %>%
-      dplyr::select(-c(Mlight,Mlab,Mheavymax,A))
-    message("qSIP model does not exist for 15N - only delta BD based AFE estimates are reported")
+  #} #else if (isotope == "15N") {
+    #df_boot = atomX$A
+    #df_boot = df_boot %>%
+    #  dplyr::select(-c(Mlight,Mlab,Mheavymax,A))
+    #print("qSIP model does not exist for 15N - only delta BD based AFE estimates are reported")
       } else {
     stop("You have used an isotope that does not have a qSIP model or perhaps the notation you used was wrong? In that case please check documentation on how to specify the isotope")
   }
@@ -513,20 +532,158 @@ qSIP_bootstrap_fcr = function(atomX, isotope='13C', n_sample=c(3,3), ci_adjust_m
   } else {
     df_boot = df_boot %>%
       dplyr::select(-delbd_sd)
-    message("Isotope is not 13C or 15N so delta BD based AFE is not reported")
+    warning("Isotope is not 13C or 15N so delta BD based AFE is not reported")
   }
 
   if (ci_adjust_method == "fcr") {
     df_boot = df_boot %>%
-      dplyr::select(-contains("bonferroni"))
+      dplyr::select(-c(contains("bonferroni"),A_CI_low,A_CI_high, delbd_sd))
   } else if (ci_adjust_method == "bonferroni") {
     df_boot = df_boot %>%
-      dplyr::select(-contains("fcr"))
+      dplyr::select(-c(contains("fcr"), A_CI_low,A_CI_high, delbd_sd))
   } else if (ci_adjust_method == "none") {
     df_boot = df_boot %>%
-      dplyr::select(-contains(c("fcr", "bonferroni")))
+      dplyr::select(-c(contains(c("fcr", "bonferroni")), delbd_sd))
   } else {
     stop("This package does not use the chosen multiple testing method. Please edit in the source code and upload if necessary, thanks!")
   }
+
+  if (df_boot %>%
+      dplyr::mutate(cov = abs(A_sd*100/A_mean)) %>%
+      dplyr::summarise(count = sum(cov > 30)) %>%
+      dplyr::pull(count) > 1) {
+
+    # Print a message if condition is met
+    message("The coefficient of variation of bootstrapped values is >30%.
+          To get more stricter inferences and narrower confidence intervals,
+          please consider increasing the number of bootstraps.
+          With narrower confidence intervals, you may have a lower false positive rate.")
+  }
+
+  if (show_delbd_AFE  == FALSE) {
+  df_boot = dplyr::select(df_boot, -c(Wlight, Wlab, Z, Mlight, Mlab, Mheavymax,
+                                      A_mean,A_sd,contains("delbd")))
+  } else if (show_delbd_AFE == TRUE) {
+    df_boot = dplyr::select(df_boot, -c(Wlight, Wlab, Z, Mlight, Mlab, Mheavymax,
+                                        A_mean,A_sd))
+  }
+
+
   return(df_boot)
+}
+
+#' The following function is adapted from HTSSIP R package
+#' conversion to numeric
+#'
+#' Conducts conversion: as.character --> as.numeric
+#'
+#' @param x  single value
+#' @return numeric
+#'
+#' @export
+#'
+as.Num = function(x){
+  as.numeric(as.character(x))
+}
+
+
+#' The following function is adapted from HTSSIP R package
+#' phyloseq data object conversion to data.frame
+#'
+#' Conducts conversion of 1 of the data objects
+#' in a phyloseq object (eg., tax_table) to a dataframe
+#'
+#' @param physeq  Phyloseq object
+#' @param table_func  See \code{Phyloseq::phyloseq-class} for options
+#' @return data.frame
+#'
+#' @export
+#'
+phyloseq2df = function(physeq, table_func){
+  physeq.md = table_func(physeq)
+  physeq.md = suppressWarnings(as.data.frame(as.matrix(physeq.md)))
+  physeq.md = as.matrix(data.frame(lapply(physeq.md, as.character)))
+  physeq.md = as.data.frame(apply(physeq.md, 2, trimws))
+  rownames(physeq.md) = rownames(table_func(physeq))
+  return(physeq.md)
+}
+
+
+#' The following function is adapted from HTSSIP R package
+#' Phyloseq conversion to a ggplot-formatted table
+#'
+#' Convert the OTU table (+ metadata) to a format that can be
+#' easily plotted with phyloseq
+#'
+#' @param physeq  Phyloseq object
+#' @param include_sample_data  Include \code{sample_table} information?
+#' @param sample_col_keep  Which columns in the \code{sample_data} table to keep?
+#'   Use \code{NULL} to keep all columns.
+#' @param include_tax_table  Include \code{tax_table} information?
+#' @param tax_col_keep  A vector for column names to keep.
+#'   Use \code{NULL} to keep all columns.
+#' @param control_expr  An expression for identifying which samples are controls.
+#' Control/non-control identification will be in the 'IS_CONTROL' column of the
+#' returned data.frame object.
+#' @return data.frame
+#'
+#' @export
+phyloseq2table = function(physeq,
+                          include_sample_data=FALSE,
+                          sample_col_keep=NULL,
+                          include_tax_table=FALSE,
+                          tax_col_keep=NULL,
+                          control_expr=NULL){
+  # OTU table
+  df_OTU = phyloseq::otu_table(physeq)
+  df_OTU = suppressWarnings(as.data.frame(as.matrix(df_OTU)))
+  df_OTU$OTU = rownames(df_OTU)
+  sel_cols = colnames(df_OTU)[colnames(df_OTU) != 'OTU']
+  df_OTU = tidyr::gather(df_OTU, "SAMPLE_JOIN", "Count", -"OTU")
+
+  # sample metdata
+  if(include_sample_data==TRUE){
+    df_meta = phyloseq2df(physeq, phyloseq::sample_data)
+    df_meta$SAMPLE_JOIN = rownames(df_meta)
+
+    if(! is.null(control_expr)){
+      # setting control
+      df_meta = df_meta %>%
+        dplyr::mutate_(IS_CONTROL = control_expr)
+      # check
+      if(all(df_meta$IS_CONTROL == FALSE)){
+        stop('control_expr is not valid; no samples selected as controls')
+      }
+    }
+
+    ## trimming
+    if(!is.null(sample_col_keep)){
+      sample_col_keep = c('SAMPLE_JOIN', sample_col_keep)
+      df_meta = dplyr::select_(df_meta, .dots=as.list(sample_col_keep))
+    }
+    # join
+    df_OTU = dplyr::inner_join(df_OTU, df_meta, c('SAMPLE_JOIN'))
+    if(nrow(df_OTU) == 0){
+      stop('No rows returned after inner_join of otu_table & sample_data')
+    }
+  }
+
+  # taxonomy table
+  if(include_tax_table==TRUE){
+    df_tax = phyloseq::tax_table(physeq)
+    df_tax = suppressWarnings(as.data.frame(as.matrix(df_tax)))
+    df_tax$OTU = rownames(df_tax)
+    ## trimming
+    if(!is.null(tax_col_keep)){
+      tax_col_keep = c('OTU', tax_col_keep)
+      df_tax = dplyr::select_(df_tax, .dots=as.list(tax_col_keep))
+    }
+    # join
+    df_OTU = dplyr::inner_join(df_OTU, df_tax, c('OTU'))
+    if(nrow(df_OTU) == 0){
+      stop('No rows returned after inner_join of otu_table & tax_table')
+    }
+  }
+
+  return(df_OTU)
 }

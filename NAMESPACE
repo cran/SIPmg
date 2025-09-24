@@ -2,10 +2,13 @@
 
 export(DESeq2_l2fc)
 export(HRSIP)
+export(as.Num)
 export(coverage_normalization)
 export(filter_na)
 export(incorporators_taxonomy)
 export(phylo.table)
+export(phyloseq2df)
+export(phyloseq2table)
 export(qSIP_atom_excess_MAGs)
 export(qSIP_bootstrap_fcr)
 export(sample.table)

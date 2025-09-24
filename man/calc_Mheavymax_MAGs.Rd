@@ -9,7 +9,7 @@ calc_Mheavymax_MAGs(Mlight, isotope = "13C", Gi = Gi)
 \arguments{
 \item{Mlight}{The molecular wight of unlabeled DNA}
 
-\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O')}
+\item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O' or '15N')}
 
 \item{Gi}{The G+C content of unlabeled DNA}
 }

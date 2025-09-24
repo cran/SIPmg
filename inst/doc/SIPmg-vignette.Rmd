@@ -39,7 +39,7 @@ However, traditional DNA-SIP is only a qualitative technique to identify active 
 
 ## Quantitative metagenomics
 
-Although metagenomics offers a comprehensive account of the metabolic repertoire in an environment, typically, the data is compositional. Relative abundance of genes or taxa is estimated to determine microbial community dynamics, which is directly influenced by the dynamics of rest of the community. Even if a certain gene remains in the same concentration, its relative abundance changes if a certain other gene increases/decreases in concentration. Absolute abundance of gene/genome can be critical, for instance, in the surveillance of a pathogenic gene/genome in an environment. For quantitative measurements of microbial taxon absolute abundance in a given metagenomic sample, [Hardwick et al. (2018)](https://www.nature.com/articles/s41467-018-05555-0) proposed synthetic spike-ins, or sequins, as internal reference standards. Reference standards in metagenomics can act as scaling factors to evaluate quantitative estimates of individual biological features, in this case, genes or genomes. 
+Although metagenomics offers a comprehensive account of the metabolic repertoire in an environment, typically, the data is compositional. Relative abundance of genes or taxa is estimated to determine microbial community dynamics, which is directly influenced by the dynamics of rest of the community. Even if a certain gene remains in the same concentration, its relative abundance changes if a certain other gene increases/decreases in concentration. Absolute abundance of gene/genome can be critical, for instance, in the surveillance of a pathogenic gene/genome in an environment. For quantitative measurements of microbial taxon absolute abundance in a given metagenomic sample, [Hardwick et al. (2018)](https://doi.org/10.1038/s41467-018-05555-0) proposed synthetic spike-ins, or sequins, as internal reference standards. Reference standards in metagenomics can act as scaling factors to evaluate quantitative estimates of individual biological features, in this case, genes or genomes. 
 
 ## Quantitative SIP (qSIP)
 
@@ -49,23 +49,25 @@ In quantitative SIP (qSIP), quantitative estimates of isotope incorporation, exp
 ## For details on SIP, quantitative metagenomics, and qSIP, please refer to the following works:
 
 ### SIP
-[Neufeld, Josh D., Jyotsna Vohra, Marc G. Dumont, Tillmann Lueders, Mike Manefield, Michael W. Friedrich, and J. Colin Murrell. 2007. “DNA Stable-Isotope Probing.” Nature Protocols 2 (4): 860–66.](https://www.nature.com/articles/nprot.2007.109)
+[Neufeld, Josh D., Jyotsna Vohra, Marc G. Dumont, Tillmann Lueders, Mike Manefield, Michael W. Friedrich, and J. Colin Murrell. 2007. “DNA Stable-Isotope Probing.” Nature Protocols 2 (4): 860–66.](https://doi.org/10.1038/nprot.2007.109)
 
-[Neufeld JD, Dumont MG, Vohra J, Murrell JC. Methodological considerations for the use of stable isotope probing in microbial ecology. Microbial Ecology 2007; 53: 435–442.](https://link.springer.com/article/10.1007/s00248-006-9125-x)
+[Neufeld JD, Dumont MG, Vohra J, Murrell JC. Methodological considerations for the use of stable isotope probing in microbial ecology. Microbial Ecology 2007; 53: 435–442.](https://doi.org/10.1007/s00248-006-9125-x)
 
-[Buckley DH, Huangyutitham V, Hsu S-F, Nelson TA. Stable isotope probing with 15N achieved by disentangling the effects of genome G+ C content and isotope enrichment on DNA density. Applied and environmental microbiology 2007; 73: 3189–3195.](https://journals.asm.org/doi/10.1128/AEM.02609-06)
+[Buckley DH, Huangyutitham V, Hsu S-F, Nelson TA. Stable isotope probing with 15N achieved by disentangling the effects of genome G+ C content and isotope enrichment on DNA density. Applied and environmental microbiology 2007; 73: 3189–3195.](https://doi.org/10.1128/AEM.02609-06)
 
 ### Quantitative metagenomics
-[Hardwick SA, Chen WY, Wong T, Kanakamedala BS, Deveson IW, Ongley SE, et al. Synthetic microbe communities provide internal reference standards for metagenome sequencing and analysis. Nature Communications 2018; 9: 3096.](https://www.nature.com/articles/s41467-018-05555-0)
+[Hardwick SA, Chen WY, Wong T, Kanakamedala BS, Deveson IW, Ongley SE, et al. Synthetic microbe communities provide internal reference standards for metagenome sequencing and analysis. Nature Communications 2018; 9: 3096.](https://doi.org/10.1038/s41467-018-05555-0)
 
 ### qSIP
-[Hungate BA, Mau RL, Schwartz E, Caporaso JG, Dijkstra P, Gestel N van, et al. Quantitative Microbial Ecology through Stable Isotope Probing. Appl Environ Microbiol 2015; 81: 7570–7581.](https://journals.asm.org/doi/10.1128/AEM.02280-15)
+[Hungate BA, Mau RL, Schwartz E, Caporaso JG, Dijkstra P, Gestel N van, et al. Quantitative Microbial Ecology through Stable Isotope Probing. Appl Environ Microbiol 2015; 81: 7570–7581.](https://doi.org/10.1128/AEM.02280-15)
 
-[Sieradzki ET, Koch BJ, Greenlon A, Sachdeva R, Malmstrom RR, Mau RL, et al. Measurement error and resolution in quantitative stable isotope probing: implications for experimental design. Msystems 2020; 5: e00151-20.](https://journals.asm.org/doi/10.1128/mSystems.00151-20)
+[Sieradzki ET, Koch BJ, Greenlon A, Sachdeva R, Malmstrom RR, Mau RL, et al. Measurement error and resolution in quantitative stable isotope probing: implications for experimental design. Msystems 2020; 5: e00151-20.](https://doi.org/10.1128/msystems.00151-20)
+
+[Vyshenska D* and Sampara P* et al. A standardized quantitative analysis strategy for stable isotope probing metagenomics. Msystems 2023; e01280-22](https://doi.org/10.1128/msystems.01280-22)
 
 ### HTSSIP R package
 
-[Youngblut ND, Barnett SE, Buckley DH. HTSSIP: An R package for analysis of high throughput sequencing data from nucleic acid stable isotope probing (SIP) experiments. PLOS ONE 2018; 13: e0189616.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189616)
+[Youngblut ND, Barnett SE, Buckley DH. HTSSIP: An R package for analysis of high throughput sequencing data from nucleic acid stable isotope probing (SIP) experiments. PLOS ONE 2018; 13: e0189616.](https://doi.org/10.1371/journal.pone.0189616)
 
 # Using SIPmg R package
 
@@ -77,8 +79,8 @@ Overall, the package can perform the following:
 1. Coverage normalization to absolute concentrations or relative coverage. Scaling of coverages to absolute abundances based on post-fractionation reference standards, called sequins.
 
 2. Statistical analysis based on either of 
-  + AFE mathematical model by [Hungate et al. (2015)](https://journals.asm.org/doi/10.1128/AEM.02280-15) or
-  + Delta buoyant density $AFE_{ΔBD}$ = $\frac{W_{Lab}- W_{Light}}{I_{max}}$.        Where Imax is the maximum linear shift in DNA BD (upon 100% labeling), as        discussed by [Birnie and Rickwood (1978)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2595786/)
+  + AFE mathematical model by [Hungate et al. (2015)](https://doi.org/10.1128/AEM.02280-15) or
+  + Delta buoyant density $AFE_{ΔBD}$ = $\frac{W_{Lab}- W_{Light}}{I_{max}}$.        Where Imax is the maximum linear shift in DNA BD (upon 100% labeling), as  discussed by [Birnie and Rickwood (1978)]https://doi.org/10.1016/B978-0-408-70803-6.50005-4)
   + Analyses as offered by [HTS-SIP](https://CRAN.R-project.org/package=HTSSIP)
   
 3. Data visualization for identification of isotope incorporators.
@@ -89,15 +91,15 @@ qSIP analysis is typically performed using sequins, MAG coverage, and MAG taxono
 Note: Sequins that were spiked in the DNA-SIP fractions will be used in scaling and creating linear regression models for evaluating absolute MAG concentrations. Please see `sequin_scaling.R` \n
 For normalizing coverage values please see `pooling_funs.R` \n
 
-This R markdown primarily uses `Tidyverse`, `phyloseq`, and `HTSSIP` packages \n
+This R markdown primarily uses `Tidyverse`, and `phyloseq` \n
 This markdown uses functions from `functions_qSIP_MAGs.R` \n
 
-For this data, MetaSIPSim (developed by [Barnett et al, 2020](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-3372-6)) was used to simulate a data set from a hypothetical SIP workflow performed on the MBARC-26 mock community (as defined in [Singer et al, 2016](https://www.nature.com/articles/sdata201681)). The data set was further augmented with simulated post-fractionation sequin spike-ins and the data set was simulated to have all 26 organisms as incorporators. Some of the 26 organisms also had plasmids, which were assembled as distinct genomic units, adding the total genomic features in the simulated study to be 38
+For this data, MetaSIPSim (developed by [Barnett et al, 2020](https://doi.org/10.1186/s12859-020-3372-6)) was used to simulate a data set from a hypothetical SIP workflow performed on the MBARC-26 mock community (as defined in [Singer et al, 2016](https://doi.org/10.1038/sdata.2016.81)). The data set was further augmented with simulated post-fractionation sequin spike-ins and the data set was simulated to have all 26 organisms as incorporators. Some of the 26 organisms also had plasmids, which were assembled as distinct genomic units, adding the total genomic features in the simulated study to be 38. The example below will also cover a case considering the same data but assuming the isotopes were 15N and 14N, instead of 13C and 12C
 
 ```{r Load libraries}
 #Load required libraries
 
-#list.of.packages <- c("tidyverse", "HTSSIP", "ggpubr","data.table")
+#list.of.packages <- c("tidyverse", "ggpubr","data.table")
 #new.packages <- list.of.packages[!(list.of.packages %in% #installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages, quiet = TRUE, #dependencies = TRUE, repos = "http://cran.us.r-project.org")
 
@@ -107,8 +109,8 @@ For this data, MetaSIPSim (developed by [Barnett et al, 2020](https://bmcbioinfo
 
 #BiocManager::install("EBImage")
 
+#library(tidyverse)
 library(phyloseq)
-library(HTSSIP)
 library(ggpubr)
 library(SIPmg)
 
@@ -222,6 +224,7 @@ GC_content <- readr::read_csv(file = "mock_input_data/GC_content.csv")
 
 #Fractions
 fractions = readr::read_csv("mock_input_data/fractions.csv")
+fractions.15N = readr::read_csv("mock_input_data/fractions_15N.csv")
 
 ```
 
@@ -250,7 +253,13 @@ taxonomy_tibble = dplyr::bind_rows(gtdbtk_bac_summary, gtdbtk_archaea) #Combine 
 ##Scale MAG coverages to obtain MAG absolute concentrations and save scaling plots in the working directory
 #For rlm scaling using scale_features_rlm
 #For rlm scaling using scale_features_lm
-mag_tab_scaled <- SIPmg::scale_features_rlm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, save_plots = FALSE)
+mag_tab_scaled <- SIPmg::scale_features_rlm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 save_plots = FALSE)
+
 mag_tab = as.matrix(mag_tab_scaled$mag_tab) #Extract absolute abundances as a matrix
 ```
 
@@ -272,46 +281,60 @@ mag.table = phyloseq::otu_table(mag_tab, taxa_are_rows = TRUE) #Phyloseq OTU tab
 
 taxonomy.object = SIPmg::tax.table(taxonomy_tibble) # Create a taxonomy phyloseq object
 samples.object = SIPmg::sample.table(fractions) # Create a samples phyloseq object
-phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) # Make a phyloseq table for downstream qSIP analysis
+samples.object.15N = SIPmg::sample.table(fractions.15N)
+phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) 
+phylo.qSIP.15N = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object.15N) # Make a phyloseq table for downstream qSIP analysis
 ```
 
 ## Estimation of atom fraction excess
 
-The following steps estimate the atom fraction excess (AFE) in the MAGs. This calculation is based on the mathematical model suggested by [Hungate et al. (2015)](https://journals.asm.org/doi/full/10.1128/AEM.02280-15). In the article, the authors suggest that GC contents of the individual biological features of interest should be accounted for to have a better estimate of AFE. Through the power of metagenomic analysis and the recovery of MAGs, one can estimate the GC content of features of interest and thereby obtain a better estimate of AFE. Thus, here the user would use the GC contents of MAGs in the AFE estimations and obtain isotopic enrichment of individual MAGs. 
+The following steps estimate the atom fraction excess (AFE) in the MAGs. This calculation is based on the mathematical model suggested by [Hungate et al. (2015)](https://doi.org/10.1128/AEM.02280-15). In the article, the authors suggest that GC contents of the individual biological features of interest should be accounted for to have a better estimate of AFE. Through the power of metagenomic analysis and the recovery of MAGs, one can estimate the GC content of features of interest and thereby obtain a better estimate of AFE. Thus, here the user would use the GC contents of MAGs in the AFE estimations and obtain isotopic enrichment of individual MAGs. 
 
 An important consideration is that the AFE calculations are based on a mathematical model and are not an absolute estimate of isotopic enrichment. One of the goals of AFE estimation is to determine isotope incorporators. 
 
-In this example workflow, the approach reported in [Hungate et al. (2015)](https://journals.asm.org/doi/full/10.1128/AEM.02280-15) is used to determine incorporators.
+In this example workflow, the approach reported in [Hungate et al. (2015)](https://doi.org/10.1128/AEM.02280-15) is used to determine incorporators.
 
 For this step, the following are used:
 
 1. Master phyloseq object from the previous step
 2. GC content
 
-Thanks to [HTSSIP R package](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189616), bootstrapping can be performed faster with multithreading.
+Thanks to [HTSSIP R package](https://doi.org/10.1371/journal.pone.0189616), bootstrapping can be performed faster with multithreading.
+
+Here, the package also gives a message if the number of bootstraps resulted in a low or high coefficient of variation of bootstrapped values. If the coefficient of variation is >30%, it pops a message suggesting a re-run with a higher number of bootstraps.
+
+Additionally, the AFE values based on the delta buoyant density method as discussed in this paper [Youngblut et al. ](https://doi.org/10.3389/fmicb.2018.00570) can be outputted (`show_delbd_AFE = TRUE`).
 
 ```{r Calculate atom fraction excess}
 atomX = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP,
-                               control_expr='Isotope=="12C"',
+                               control_expr='Isotope=="12C"',isotope = "13C",
+                               treatment_rep='Replicate',
+                               Gi = GC_content)
+atomX.15N = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP.15N,
+                               control_expr='Isotope=="14N"',isotope = "15N",
                                treatment_rep='Replicate',
                                Gi = GC_content)
 #Bootstrap confidence intervals
-df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10) #Change "parallel = FALSE" to compute using a single-core
+df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=100, Gi = GC_content, isotope = "13C", show_delbd_AFE = FALSE)
+df_atomX_boot.15N = SIPmg::qSIP_bootstrap_fcr(atomX.15N, n_boot=100, Gi = GC_content, isotope = "15N")#Change "parallel = FALSE" to compute using a single-core
 
 ```
 
 
 ## Plot the atom fraction excess plot
 
-Plot the atom fraction excess data with 5 % and 95 % quantiles as the confidence limits. In the same way as reported in [Hungate et al. (2015)](https://journals.asm.org/doi/full/10.1128/AEM.02280-15), a MAG is considered an incorporator if the lower confidence interval of its AFE is above zero.
+Plot the atom fraction excess data with 5 % and 95 % quantiles as the confidence limits. In the same way as reported in [Hungate et al. (2015)](https://doi.org/10.1128/AEM.02280-15), a MAG is considered an incorporator if the lower confidence interval of its AFE is above zero.
 
 ```{r Plot atom fraction excess}
 CI_threshold = 0
 df_atomX_boot = df_atomX_boot %>%
   dplyr::mutate(Incorporator = A_CI_fcr_low > CI_threshold,
          OTU = reorder(OTU, -A))
+df_atomX_boot.15N = df_atomX_boot.15N %>%
+  dplyr::mutate(Incorporator = A_CI_fcr_low > CI_threshold,
+         OTU = reorder(OTU, -A))
 
-(atom_f_excess_plot = ggplot2::ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorporator)) +
+(atom_f_excess_plot = ggplot2::ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_fcr_low, ymax=A_CI_fcr_high, color=Incorporator)) +
   geom_pointrange(size=0.25) +
   geom_linerange() +
   geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
@@ -330,11 +353,19 @@ ggplot2::ggsave(filename = "atom_fration_excess.pdf", plot = atom_f_excess_plot)
 n_incorp = df_atomX_boot %>%
   dplyr::filter(Incorporator == TRUE) %>%
   nrow 
+n_incorp.15N = df_atomX_boot.15N %>%
+  dplyr::filter(Incorporator == TRUE) %>%
+  nrow 
+
 #Get incorporator list
 incorporator_list = SIPmg::incorporators_taxonomy(taxonomy = taxonomy_tibble, bootstrapped_AFE_table = df_atomX_boot)
+incorporator_list.15N = SIPmg::incorporators_taxonomy(taxonomy = taxonomy_tibble, bootstrapped_AFE_table = df_atomX_boot.15N)
+
 #Print incorporator information
 cat('Number of incorporators:', n_incorp, '\n')
+cat('Number of incorporators if isotope were 15N:', n_incorp.15N, '\n')
 print(incorporator_list, n = nrow(incorporator_list))
+print(incorporator_list.15N, n = nrow(incorporator_list.15N))
 ```
 
 It appears that not all incorporators were identified with the bootstrapping method. This could be due to the model unable to detect the incorporators. Another way to detect incorporators, as mentioned above, is to test with the ΔBD method or with the HR-SIP or MW-HR-SIP methods. For a more detailed discussion, please refer this [vignette][https://zielslab.github.io/SIPmg.github.io/identifying-incorporators.html]
@@ -349,7 +380,7 @@ We will also briefly discuss data filtering methods when there are heavily influ
 
 ## Basic approach for scaling
 
-Sequencing effort on each fraction and subsequently obtained coverage is typically used to estimate relative abundance for a feature of interest. However, as we discussed in the introductory vignette, this data is compositional and a quantitative estimate of concentrations can be highly informative. For this purpose, synthetic spike-in standards (sequins) with known concentrations are added before recovery of fractionated DNA, from the CsCl medium into TE buffer or water. For details on sequins please refer to [Hardwick et al. (2018)](https://www.nature.com/articles/s41467-018-05555-0). These reference standards in each fraction, can now be used to estimate the concentration of the feature of interest in each fraction.
+Sequencing effort on each fraction and subsequently obtained coverage is typically used to estimate relative abundance for a feature of interest. However, as we discussed in the introductory vignette, this data is compositional and a quantitative estimate of concentrations can be highly informative. For this purpose, synthetic spike-in standards (sequins) with known concentrations are added before recovery of fractionated DNA, from the CsCl medium into TE buffer or water. For details on sequins please refer to [Hardwick et al. (2018)](https://doi.org/10.1038/s41467-018-05555-0). These reference standards in each fraction, can now be used to estimate the concentration of the feature of interest in each fraction.
 
 The approach used for scaling is detailed in the following steps:
 
@@ -375,7 +406,7 @@ The approach used for scaling is detailed in the following steps:
 
 Ordinary least squares regression can be very sensitive to outliers, resulting a poor model performance when the data is contaminated with outliers. Although there are methods, like Cook's distance based filtering to address outliers, it may not always be the best idea to remove these data points.
 
-See [these]( https://statisticsbyjim.com/basics/remove-outliers/) [discussions]( https://stats.stackexchange.com/questions/175/how-should-outliers-be-dealt-with-in-linear-regression-analysis) and more for better insights into handling outliers. 
+See [these](https://statisticsbyjim.com/basics/remove-outliers/) [discussions]( https://stats.stackexchange.com/questions/175/how-should-outliers-be-dealt-with-in-linear-regression-analysis) and more for better insights into handling outliers. 
 
 Robust linear regression is an alternative to this situation. Robust linear regression assigns appropriate weights to the data points, minimizing the influence of outliers on the model performance, without deleting data. In this pipeline, a Huber loss function from the [`MASS` R package][https://CRAN.R-project.org/package=MASS] was used for robust linear regression.
 
@@ -402,7 +433,7 @@ seq_dil = readr::read_csv(file = "mock_input_data/seq_dilution_outliers.csv")
 log_scale = TRUE
 
 #coe_of_variation. Acceptable coefficient of variation for coverage and detection (eg. 20 - for 20 % threshold of coefficient of variation) (Coverages above the threshold value will be flagged in the plots)
-coe_of_variation = 50
+coe_of_variation = 250
 
 ```
 
@@ -419,7 +450,12 @@ For both scaling functions the following data and parameters are required
 If the robust linear regression is chosen, the function is `scale_features_rlm` which is performed the function file `sequin_scaling_rlm.R`.
 
 ```{r robust linear regression}
-mag_tab_scaled_rlm <- SIPmg::scale_features_rlm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, save_plots = FALSE)
+mag_tab_scaled_rlm <- SIPmg::scale_features_rlm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 save_plots = FALSE)
 ```
 
 
@@ -429,12 +465,18 @@ If the user chooses linear regression, they can choose to perform outlier filter
 
 
 ```{r linear regression}
-mag_tab_scaled_lm <- SIPmg::scale_features_lm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, cook_filtering = TRUE, save_plots = FALSE)
+mag_tab_scaled_lm <- SIPmg::scale_features_lm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 cook_filtering = TRUE,
+																		 save_plots = FALSE)
 ```
 
 ## Comparison of the fits
-
 ```{r load images, echo = FALSE}
+# TODO add install.packages for EBImage (Bioc)
 rlm_example = EBImage::readImage("rlm-example.png")
 rlm_example = EBImage::resize(rlm_example,dim(rlm_example)[1]/2)
 
@@ -483,7 +525,7 @@ EBImage::display(filtered_lm_example)
 ```
 
 ## What if there were no sequins added in the study
-In our study, we realized that the sequin-scaled data provided the best correlation (Spearman correlation coefficient = 0.85), compared to methods without the use of sequins. However, not all studies would have access to sequins or could choose not to add sequins. We tested qSIP methods with absolute concentration of MAGs obtained as a product of fraction DNA concentration and either with MAG relative abundance (as performed by [Greenlon et al.](https://journals.asm.org/doi/10.1128/mSystems.00151-20)) or relative coverage (as performed by [Starr et al.](https://journals.asm.org/doi/10.1128/mSphere.00085-21)), or simply with relative coverage, i.e., without converting the MAG coverages to absolute concentration. We found that without sequins, simply using relative coverage provided better specificity (0.99) and good correlation (Spearman correlation coefficient = 0.76), compared to the other two methods. The user could choose any of the three approaches to obtain normalized coverages using the equation `coverage_normalization()` where the parameter approach would be chosen accordingly (either "greenlon", "starr", or "relative_coverage"). In this example, simple relative coverage will be estimated without converting to absolute concentration based on fraction DNA concentrations. The relative coverage table can then be converted to a phyloseq object to run incorporator identification and/or AFE estimation. For more details, please refer to the [incorporator identification section][https://zielslab.github.io/SIPmg.github.io/identifying-incorporators.html]
+In our study, we realized that the sequin-scaled data provided the best correlation (Spearman correlation coefficient = 0.85), compared to methods without the use of sequins. However, not all studies would have access to sequins or could choose not to add sequins. We tested qSIP methods with absolute concentration of MAGs obtained as a product of fraction DNA concentration and either with MAG relative abundance (as performed by [Greenlon et al.](https://doi.org/10.1128/msystems.00151-20)) or relative coverage (as performed by [Starr et al.](https://doi.org/10.1128/msphere.00085-21)), or simply with relative coverage, i.e., without converting the MAG coverages to absolute concentration. We found that without sequins, simply using relative coverage provided better specificity (0.99) and good correlation (Spearman correlation coefficient = 0.76), compared to the other two methods. The user could choose any of the three approaches to obtain normalized coverages using the equation `coverage_normalization()` where the parameter approach would be chosen accordingly (either "greenlon", "starr", or "relative_coverage"). In this example, simple relative coverage will be estimated without converting to absolute concentration based on fraction DNA concentrations. The relative coverage table can then be converted to a phyloseq object to run incorporator identification and/or AFE estimation. For more details, please refer to the [incorporator identification section][https://zielslab.github.io/SIPmg.github.io/identifying-incorporators.html]
 
 ```{r, estimating relative coverage}
 f_tibble <- readr::read_csv("mock_input_data/coverage_metadata.csv")
@@ -502,9 +544,9 @@ It can be seen from the above plots that the regression parameters differ based 
 
 The isotope incorporators could be identified using the below methods:
 
-+ AFE mathematical model by [Hungate et al. (2015)](https://journals.asm.org/doi/10.1128/AEM.02280-15) or
-  + Delta buoyant density $AFE_{ΔBD}$ = $\frac{W_{Lab}- W_{Light}}{I_{max}}$.        Where $I_{max}$ is the maximum linear shift in DNA BD (upon 100% labeling), as        discussed by [Birnie and Rickwood (1978)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2595786/)
-  + MW-HR-SIP [Youngblut et al. ](https://www.frontiersin.org/articles/10.3389/fmicb.2018.00570/full)
++ AFE mathematical model by [Hungate et al. (2015)](https://doi.org/10.1128/AEM.02280-15) or
+  + Delta buoyant density $AFE_{ΔBD}$ = $\frac{W_{Lab}- W_{Light}}{I_{max}}$.        Where $I_{max}$ is the maximum linear shift in DNA BD (upon 100% labeling), as discussed by [Birnie and Rickwood (1978)](https://doi.org/10.1016/B978-0-408-70803-6.50005-4)
+  + MW-HR-SIP [Youngblut et al. ](https://doi.org/10.3389/fmicb.2018.00570)
 
 While the first two methods gives a quantitative estimate of isotopic enrichment in a taxon to determine if it is an incorporator, the third method relies on differential abundance analysis over multiple overlapping windows. Please refer to Youngblut et al. and [HTS-SIP R package](https://CRAN.R-project.org/package=HTSSIP) for more details.
 
@@ -567,13 +609,15 @@ samples.object = SIPmg::sample.table(fractions) # Create a samples phyloseq obje
 phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) # Make a phyloseq table for downstream qSIP analysis
 ```
 
+Here, a stricter inference of incorporator based on Delta buoyant density is made, as a differnece between AFE estimated based on the delta buoyant density approach and the standard deviation of these bootstrapped values. However, you could check if such an AFE is positive or negative to infer isotopic incorporation.
+
 ```{r AFE methodGet bootstrapped AFE table 2}
 atomX = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP,
                                control_expr='Isotope=="12C"',
-                               treatment_rep='Replicate',
+                               treatment_rep='Replicate',isotope = "13C",
                                Gi = GC_content)
 #Bootstrap confidence intervals
-df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10)
+df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10, Gi = GC_content, isotope = "13C", show_delbd_AFE = TRUE)
 CI_threshold = 0
 df_atomX_boot = df_atomX_boot %>%
   dplyr::mutate(Incorporator_qSIP = A_CI_fcr_low > CI_threshold,
@@ -614,13 +658,13 @@ Compare number of incorporators
 ```{r list incorporators 2}
 #Get incorporator info
 qSIP_incorp = df_atomX_boot %>%
-  dplyr::select(OTU, classification, A, A_sd, Incorporator_qSIP) %>%
+  dplyr::select(OTU, classification, A, Incorporator_qSIP) %>%
   dplyr::filter(Incorporator_qSIP == TRUE) %>%
   dplyr::select(-classification)
 n_qSIP_incorp = nrow(qSIP_incorp)
 
 delbd_incorp = df_atomX_boot %>%
-  dplyr::select(OTU, classification, A_delbd, A_delbd_sd, Incorporator_delbd) %>%
+  dplyr::select(OTU, classification, A_delbd, Incorporator_delbd) %>%
   dplyr::filter(Incorporator_delbd == TRUE) %>%
   dplyr::select(-classification)
 n_delbd_incorp = nrow(delbd_incorp)
@@ -645,7 +689,7 @@ rmarkdown::paged_table(all_incorp_tibble)
 
 It is evident here that the AFE estimates using qSIP model or the ΔBD method are not the same, however, both provide the same incorporator information. Although the incorporators may not be the same everytime, we found an overlap between qSIP and ΔBD methods in our metagenome datasets. We also found that qSIP model provided more accurate estimates of AFE compared to ΔBD method. 
 \n
-It also appears that MW-HR-SIP outputs lower number of incorporators. In our study and by [Youngblut et al.](https://www.frontiersin.org/articles/10.3389/fmicb.2018.00570/full), MW-HR-SIP was found to have better sensitivity compared to qSIP or ΔBD methods. It is interesting that the AFE based methods and differential abundance based methods do not provide the same incorporator identity, which is perhaps due to comparistive analysis in only the multiple overlapping windows in the MW-HR-SIP method, while the AFE methods examine the complete BD gradient. Due to the higher sensitivity of the MW-HR-SIP method, we attempted a sequential analysis with first MW-HR-SIP to eliminate likely false positives, and then perform qSIP to estimate AFE. Such a method reduces multiple comparisons and increases confidence in detecting true incorporators due to higher statistical power.
+It also appears that MW-HR-SIP outputs lower number of incorporators. In our study and by [Youngblut et al.](https://doi.org/10.3389/fmicb.2018.00570), MW-HR-SIP was found to have better sensitivity compared to qSIP or ΔBD methods. It is interesting that the AFE based methods and differential abundance based methods do not provide the same incorporator identity, which is perhaps due to comparistive analysis in only the multiple overlapping windows in the MW-HR-SIP method, while the AFE methods examine the complete BD gradient. Due to the higher sensitivity of the MW-HR-SIP method, we attempted a sequential analysis with first MW-HR-SIP to eliminate likely false positives, and then perform qSIP to estimate AFE. Such a method reduces multiple comparisons and increases confidence in detecting true incorporators due to higher statistical power.
 \n
 We are merely providing the different methods for the user to decide which method to apply for detecting incorporators in their study. The choice of the method is to the user's discretion that fits best their study.
 ## Session information

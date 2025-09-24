@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -7,7 +7,7 @@ knitr::opts_chunk$set(
 ## ----Load libraries-----------------------------------------------------------
 #Load required libraries
 
-#list.of.packages <- c("tidyverse", "HTSSIP", "ggpubr","data.table")
+#list.of.packages <- c("tidyverse", "ggpubr","data.table")
 #new.packages <- list.of.packages[!(list.of.packages %in% #installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages, quiet = TRUE, #dependencies = TRUE, repos = "http://cran.us.r-project.org")
 
@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
 
 #BiocManager::install("EBImage")
 
+#library(tidyverse)
 library(phyloseq)
-library(HTSSIP)
 library(ggpubr)
 library(SIPmg)
 
@@ -53,6 +53,7 @@ GC_content <- readr::read_csv(file = "mock_input_data/GC_content.csv")
 
 #Fractions
 fractions = readr::read_csv("mock_input_data/fractions.csv")
+fractions.15N = readr::read_csv("mock_input_data/fractions_15N.csv")
 
 
 ## ----estimate absolute concentrations-----------------------------------------
@@ -62,7 +63,13 @@ taxonomy_tibble = dplyr::bind_rows(gtdbtk_bac_summary, gtdbtk_archaea) #Combine 
 ##Scale MAG coverages to obtain MAG absolute concentrations and save scaling plots in the working directory
 #For rlm scaling using scale_features_rlm
 #For rlm scaling using scale_features_lm
-mag_tab_scaled <- SIPmg::scale_features_rlm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, save_plots = FALSE)
+mag_tab_scaled <- SIPmg::scale_features_rlm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 save_plots = FALSE)
+
 mag_tab = as.matrix(mag_tab_scaled$mag_tab) #Extract absolute abundances as a matrix
 
 ## ----example scaling plot, echo = FALSE---------------------------------------
@@ -74,15 +81,22 @@ mag.table = phyloseq::otu_table(mag_tab, taxa_are_rows = TRUE) #Phyloseq OTU tab
 
 taxonomy.object = SIPmg::tax.table(taxonomy_tibble) # Create a taxonomy phyloseq object
 samples.object = SIPmg::sample.table(fractions) # Create a samples phyloseq object
-phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) # Make a phyloseq table for downstream qSIP analysis
+samples.object.15N = SIPmg::sample.table(fractions.15N)
+phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) 
+phylo.qSIP.15N = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object.15N) # Make a phyloseq table for downstream qSIP analysis
 
 ## ----Calculate atom fraction excess-------------------------------------------
 atomX = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP,
-                               control_expr='Isotope=="12C"',
+                               control_expr='Isotope=="12C"',isotope = "13C",
+                               treatment_rep='Replicate',
+                               Gi = GC_content)
+atomX.15N = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP.15N,
+                               control_expr='Isotope=="14N"',isotope = "15N",
                                treatment_rep='Replicate',
                                Gi = GC_content)
 #Bootstrap confidence intervals
-df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10) #Change "parallel = FALSE" to compute using a single-core
+df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=100, Gi = GC_content, isotope = "13C", show_delbd_AFE = FALSE)
+df_atomX_boot.15N = SIPmg::qSIP_bootstrap_fcr(atomX.15N, n_boot=100, Gi = GC_content, isotope = "15N")#Change "parallel = FALSE" to compute using a single-core
 
 
 ## ----Plot atom fraction excess------------------------------------------------
@@ -90,8 +104,11 @@ CI_threshold = 0
 df_atomX_boot = df_atomX_boot %>%
   dplyr::mutate(Incorporator = A_CI_fcr_low > CI_threshold,
          OTU = reorder(OTU, -A))
+df_atomX_boot.15N = df_atomX_boot.15N %>%
+  dplyr::mutate(Incorporator = A_CI_fcr_low > CI_threshold,
+         OTU = reorder(OTU, -A))
 
-(atom_f_excess_plot = ggplot2::ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorporator)) +
+(atom_f_excess_plot = ggplot2::ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_fcr_low, ymax=A_CI_fcr_high, color=Incorporator)) +
   geom_pointrange(size=0.25) +
   geom_linerange() +
   geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
@@ -107,11 +124,19 @@ ggplot2::ggsave(filename = "atom_fration_excess.pdf", plot = atom_f_excess_plot)
 n_incorp = df_atomX_boot %>%
   dplyr::filter(Incorporator == TRUE) %>%
   nrow 
+n_incorp.15N = df_atomX_boot.15N %>%
+  dplyr::filter(Incorporator == TRUE) %>%
+  nrow 
+
 #Get incorporator list
 incorporator_list = SIPmg::incorporators_taxonomy(taxonomy = taxonomy_tibble, bootstrapped_AFE_table = df_atomX_boot)
+incorporator_list.15N = SIPmg::incorporators_taxonomy(taxonomy = taxonomy_tibble, bootstrapped_AFE_table = df_atomX_boot.15N)
+
 #Print incorporator information
 cat('Number of incorporators:', n_incorp, '\n')
+cat('Number of incorporators if isotope were 15N:', n_incorp.15N, '\n')
 print(incorporator_list, n = nrow(incorporator_list))
+print(incorporator_list.15N, n = nrow(incorporator_list.15N))
 
 ## ----Load data 2, echo = FALSE------------------------------------------------
 ##Load data
@@ -128,16 +153,28 @@ seq_dil = readr::read_csv(file = "mock_input_data/seq_dilution_outliers.csv")
 log_scale = TRUE
 
 #coe_of_variation. Acceptable coefficient of variation for coverage and detection (eg. 20 - for 20 % threshold of coefficient of variation) (Coverages above the threshold value will be flagged in the plots)
-coe_of_variation = 50
+coe_of_variation = 250
 
 
 ## ----robust linear regression-------------------------------------------------
-mag_tab_scaled_rlm <- SIPmg::scale_features_rlm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, save_plots = FALSE)
+mag_tab_scaled_rlm <- SIPmg::scale_features_rlm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 save_plots = FALSE)
 
 ## ----linear regression--------------------------------------------------------
-mag_tab_scaled_lm <- SIPmg::scale_features_lm(f_tibble, sequins, seq_dil, log_scale, coe_of_variation = coe_of_variation, cook_filtering = TRUE, save_plots = FALSE)
+mag_tab_scaled_lm <- SIPmg::scale_features_lm(f_tibble = f_tibble,
+																		 sequin_meta = sequins,
+																		 seq_dilution = seq_dil,
+																		 coe_of_variation = coe_of_variation,
+																		 log_trans = log_scale,
+																		 cook_filtering = TRUE,
+																		 save_plots = FALSE)
 
 ## ----load images, echo = FALSE------------------------------------------------
+# TODO add install.packages for EBImage (Bioc)
 rlm_example = EBImage::readImage("rlm-example.png")
 rlm_example = EBImage::resize(rlm_example,dim(rlm_example)[1]/2)
 
@@ -158,7 +195,7 @@ EBImage::display(rlm_example)
 #Linear regression plot without filtering sequin data
 EBImage::display(lm_example)
 
-## ---- outlier sequin coverages------------------------------------------------
+## ----outlier sequin coverages-------------------------------------------------
 
 #Cook's distance threshold of the data set
 4/(length(mag_tab_scaled_lm$scale_fac$cooksd[[3]]))
@@ -173,7 +210,7 @@ EBImage::display(cooksd_example)
 #Linear regression plot with filtered outliers in sequin data
 EBImage::display(filtered_lm_example)
 
-## ---- estimating relative coverage--------------------------------------------
+## ----estimating relative coverage---------------------------------------------
 f_tibble <- readr::read_csv("mock_input_data/coverage_metadata.csv")
 rel.cov = SIPmg::coverage_normalization(f_tibble = f_tibble, approach = "relative_coverage")
 mag.table = phyloseq::otu_table(as.matrix(rel.cov %>% tibble::column_to_rownames(var = "Feature")), taxa_are_rows = TRUE) #Phyloseq OTU table
@@ -230,10 +267,10 @@ phylo.qSIP = SIPmg::phylo.table(mag.table, taxonomy.object, samples.object) # Ma
 ## ----AFE methodGet bootstrapped AFE table 2-----------------------------------
 atomX = SIPmg::qSIP_atom_excess_MAGs(phylo.qSIP,
                                control_expr='Isotope=="12C"',
-                               treatment_rep='Replicate',
+                               treatment_rep='Replicate',isotope = "13C",
                                Gi = GC_content)
 #Bootstrap confidence intervals
-df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10)
+df_atomX_boot = SIPmg::qSIP_bootstrap_fcr(atomX, n_boot=10, Gi = GC_content, isotope = "13C", show_delbd_AFE = TRUE)
 CI_threshold = 0
 df_atomX_boot = df_atomX_boot %>%
   dplyr::mutate(Incorporator_qSIP = A_CI_fcr_low > CI_threshold,
@@ -245,7 +282,7 @@ df_atomX_boot = df_atomX_boot %>%
                dplyr::select(user_genome, classification) %>%
                dplyr::rename(OTU = user_genome)) 
 
-## ---- MW-HR-SIP---------------------------------------------------------------
+## ----MW-HR-SIP----------------------------------------------------------------
 windows = data.frame(density_min=c(1.71,1.72, 1.73), 
                      density_max=c(1.74,1.75,1.76))
 
@@ -266,13 +303,13 @@ mw.hr.sip = mw.hr.sip %>%
 ## ----list incorporators 2-----------------------------------------------------
 #Get incorporator info
 qSIP_incorp = df_atomX_boot %>%
-  dplyr::select(OTU, classification, A, A_sd, Incorporator_qSIP) %>%
+  dplyr::select(OTU, classification, A, Incorporator_qSIP) %>%
   dplyr::filter(Incorporator_qSIP == TRUE) %>%
   dplyr::select(-classification)
 n_qSIP_incorp = nrow(qSIP_incorp)
 
 delbd_incorp = df_atomX_boot %>%
-  dplyr::select(OTU, classification, A_delbd, A_delbd_sd, Incorporator_delbd) %>%
+  dplyr::select(OTU, classification, A_delbd, Incorporator_delbd) %>%
   dplyr::filter(Incorporator_delbd == TRUE) %>%
   dplyr::select(-classification)
 n_delbd_incorp = nrow(delbd_incorp)
